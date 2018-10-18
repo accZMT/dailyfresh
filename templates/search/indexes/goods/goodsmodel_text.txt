@@ -1,0 +1,4 @@
+{{ object.goods_name }}
+{{ object.desc }}
+{{ object.abstract }}
+{{ object.unit }}

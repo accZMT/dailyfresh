@@ -1,0 +1,148 @@
+{% extends 'user/user_base.html' %}
+
+{% block link %}
+    <script>
+
+        function total(){
+               $(".col07").each(function () {
+                var count = parseInt($(this).prev().find("input").val());
+                var price = parseFloat($(this).prev().prev().find('em').text());
+                var total = count * price;
+                $(this).text(total.toFixed(2))
+            });
+        }
+        function total_all(){
+        {#    计算每个选中的行#}
+            var total_price = 0;
+            var total_count = 0;
+            {#$("input[type='checkbox']").not($('#checkall')).each(function () {#}
+            $(":checked:not('#checkall')").each(function () {
+                var count = parseInt($(this).parent().siblings(".col06").find("input").val());
+                var price = parseFloat($(this).parent().siblings(".col07").text());
+                total_price += price;
+                total_count += count;
+                console.log(total_price);
+            });
+            $("#total_price").text(total_price.toFixed(2));
+            $("#total_count").text(total_count);
+            $("#total_count_one").text(total_count);
+
+        }
+        {# 删除购物车中的商品 #}
+        function delete_cart(cart_id){
+            var delete_url = "/cart/delete/"+ cart_id+'/';
+            $.get(delete_url, function (data) {
+                $('ul').remove('ul[id='+cart_id+']');
+                total_all();
+            });
+        }
+
+
+        $(function () {
+            total();
+            total_all();
+            $("#checkall").click(function () {
+                $("input[type='checkbox']").not($('#checkall')).each(function () {
+                    $(this).prop('checked',$("#checkall").prop('checked'));
+                });
+                total_all();
+            });
+            $("input[type='checkbox']").not($('#checkall')).click(function () {
+                if($(this).prop("checked") == false){
+                    $("#checkall").prop("checked",false);
+                }
+                else if ($("input[type='checkbox']:checked").not($('#checkall')).length == $("input[type='checkbox']").not($('#checkall')).length){
+                    $("#checkall").prop("checked",true);
+                }
+                total_all();
+            });
+            $(".add").click(function () {
+                var num = parseInt($(this).next().val());
+                $(this).next().val(num+1).blur();
+                total();
+                total_all();
+            });
+            $(".minus").click(function () {
+                var num = parseInt($(this).prev().val());
+                if(num>1){
+                    $(this).prev().val(num-1).blur();
+                }
+                total();
+                total_all();
+            });
+            {# 修改购物车中的数量 #}
+            $('.num_show').blur(function () {
+                var current_count = parseInt($(this).val());
+                var stock = parseInt($(this).nextAll().filter('.stock').text());
+                if (current_count>stock){
+                    $(this).val(stock);
+                }
+                else if(current_count<1){
+                    $(this).val(1);
+                }
+                else {
+                    $(this).val(current_count);
+                }
+                var cart_id = parseInt($(this).nextAll().filter('.cart_id').text());
+                var url = "/cart/update/"+ cart_id +"/"+ parseInt($(this).val())+"/";
+                $.get(url,function (data) {
+                    total();
+                    total_all();
+                });
+                     total();
+                    total_all();
+            });
+            if(parseInt($("#total_count").text()) == 0 ){
+                $("#to_pay").css({'display':'none'});
+                $("#checkall").prop("checked",false);
+            }
+        })
+    </script>
+{% endblock %}
+
+{% block body %}
+
+	<div class="total_count">全部商品<em id="total_count_one">0</em>件</div>
+	<ul class="cart_list_th clearfix">
+		<li class="col01">商品名称</li>
+		<li class="col02">商品单位</li>
+		<li class="col03">商品价格</li>
+		<li class="col04">数量</li>
+		<li class="col05">小计</li>
+		<li class="col06">操作</li>
+	</ul>
+    {% if carts %}
+    <form action="{% url 'order:order' %}" method="get">
+	{% for cart in carts %}
+
+	<ul class="cart_list_td clearfix" id="{{ cart.id }}">
+		<li class="col01"><input type="checkbox" name="cart_id_list" checked value="{{ cart.id }}"></li>
+		<li class="col02"><img src="{{ cart.goods.pic }}"></li>
+		<li class="col03">{{ cart.goods.goods_name }}<br><em>{{ cart.goods.price }}元/{{ cart.goods.unit }}</em></li>
+		<li class="col04">{{ cart.goods.unit }}</li>
+		<li class="col05"><em>{{ cart.goods.price }}</em></li>
+		<li class="col06">
+			<div class="num_add">
+				<a href="javascript:;" class="add fl">+</a>
+				<input type="text" class="num_show fl" value="{{ cart.count }}">
+				<a href="javascript:;" class="minus fl">-</a>
+                <span class="stock" style="display: none">{{ cart.goods.stock }}</span>
+                <span class="cart_id" style="display: none">{{ cart.id }}</span>
+			</div>
+		</li>
+		<li class="col07">{{ cart.goods.price }}元</li>
+		<li class="col08"><a href="javascript:delete_cart({{ cart.id }});">删除</a></li>
+	</ul>
+	
+    {% endfor %}
+	<ul class="settlements">
+		<li class="col01"><input type="checkbox" name="" checked="" id="checkall"></li>
+		<li class="col02">全选</li>
+		<li class="col03">合计(不含运费)：<span>¥</span><em id="total_price">42.60</em><br>共计<b id="total_count">2</b>件商品</li>
+		<li class="col04" id="to_pay"><input type="submit" value="去结算" ></li>
+	</ul>
+    </form>
+    {% else %}
+       <p class="cart_list_td clearfix" style="font-size: 30px;height: 100px; text-align: center; line-height: 100px">你的购物车空空如也。。。。。。</p>
+    {% endif %}
+{% endblock %}

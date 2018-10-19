@@ -53,6 +53,16 @@
                 $("#comment_con").css("display","none");
                 $("#tab_content").removeAttr("style");
             });
+            $('#input_content').bind('input propertychange','textarea',function () {
+               if ($.trim($('#input_content').val()).length == 0){
+                $('#info_submit').attr("disabled",true);
+                $('#info_submit').css("background-color","gray");
+            }
+            else {
+                $('#info_submit').attr("disabled",false);
+                $('#info_submit').css("background-color","#37ab40");
+            }
+            });
         })
     </script>
 {% endblock %}
@@ -122,8 +132,8 @@
 				<ul>
                     {% for new in news %}
 					<li>
-						<a href="/goods/detail/{{ new.id }}"><img src="{{ new.pic }}"></a>
-						<h4><a href="/goods/detail/{{ new.id }}">{{ new.goods_name }}</a></h4>
+						<a href="/goods/detail/{{ new.id }}/"><img src="{{ new.pic }}"></a>
+						<h4><a href="/goods/detail/{{ new.id }}/">{{ new.goods_name }}</a></h4>
 						<div class="prize">￥{{ new.price }}</div>
 					</li>
                     {% endfor %}
@@ -156,14 +166,15 @@
             {% if request.session.user_id %}
                 {% if is_buy %}
 				    <dl>
+
                     <form action="{% url 'goods:comment' %}" method="post">
                         {% csrf_token %}
                         <input type="text" name="goods_id" value="{{ goods.id }}" style="display: none">
                         <div class="form_group form_group2">
 							<label>添加评论：</label>
-							<textarea class="site_area" name="content"></textarea>
+							<textarea class="site_area" id="input_content" name="content"></textarea>
 						</div>
-                        <input type="submit" value="提交" class="info_submit">
+                        <input type="submit" id="info_submit" style="background-color:gray;" value="提交" class="info_submit" disabled="disabled">
                     </form>
 				</dl>
                 {% else %}

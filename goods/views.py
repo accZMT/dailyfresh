@@ -130,7 +130,7 @@ def comment(request):
 class MySearchView(SearchView):
 
     def extra_context(self):
-        news = GoodsModel.objects.all().order_by('-id')[:20]
+        news = GoodsModel.objects.all().order_by('-id')[:2]
         goods_name = self.request.GET.get('q')
         page_num = self.request.GET.get('page')
         # search_goods = GoodsModel.objects.filter(goods_name__iregex=".*?".join(list(goods_name)))

@@ -46,18 +46,18 @@
             {% endfor %}
 				<div class="pagenation">
 					{% if page.has_previous %}
-                        <a href="/account/all_order/{{ page.previous_page_number }}">&lt;上一页</a>
+                        <a href="/account/all_order/{{ page.previous_page_number }}/">&lt;上一页</a>
                     {% endif %}
                     {% for pagenum in page.paginator.page_range  %}
                         {% if pagenum == page_num %}
-                            <a href="/account/all_order/{{ pagenum }}" class="active">{{ pagenum }}</a>
+                            <a href="/account/all_order/{{ pagenum }}/" class="active">{{ pagenum }}</a>
                         {% else %}
-                            <a href="/account/all_order/{{ pagenum }}">{{ pagenum }}</a>
+                            <a href="/account/all_order/{{ pagenum }}/">{{ pagenum }}</a>
                         {% endif %}
 
                     {% endfor %}
                     {% if page.has_next %}
-                        <a href="/account/all_order/{{ page.next_page_number }}">下一页&gt;</a>
+                        <a href="/account/all_order/{{ page.next_page_number }}/">下一页&gt;</a>
                     {% endif %}
 				</div>
 		</div>

@@ -1,5 +1,18 @@
 {% extends 'goods/list.html' %}
 
+{% block link %}
+    <script>
+        $(function () {
+            $(".add_goods").click(function () {
+                var goods_id = $(this).prev().text();
+                $.get("/cart/add/"+ goods_id +"/"+1+"/", function (data) {
+                $("#show_count").text(data.cart_count);
+             });
+            });
+        })
+
+    </script>
+{% endblock %}
 
 {% block right %}
     <div class="r_wrap fr clearfix">
@@ -21,6 +34,7 @@
 					<div class="operate">
 						<span class="prize">￥{{ goods.object.price }}</span>
 						<span class="unit">{{ goods.object.price }}/{{ goods.object.unit }}</span>
+                        <span style="display: none">{{ goods.object.id }}</span>
 						<a href="#" class="add_goods" title="加入购物车"></a>
 					</div>
 				</li>

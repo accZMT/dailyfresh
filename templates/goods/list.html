@@ -4,8 +4,7 @@
     <script>
         $(function () {
             $(".add_goods").click(function () {
-                {#var price = parseFloat($(this).prev().prev().text());#}
-                {#console.log(price.toFixed(2));#}
+
                 var goods_id = $(this).prev().text();
                 $.get("/cart/add/"+ goods_id +"/"+1+"/", function (data) {
                 $("#show_count").text(data.cart_count);
@@ -55,8 +54,8 @@
 				<ul>
                     {% for new in news %}
 					<li>
-						<a href="/goods/detail/{{ new.id }}"><img src="{{ new.pic }}"></a>
-						<h4><a href="/goods/detail/{{ new.id }}">{{ new.goods_name }}</a></h4>
+						<a href="/goods/detail/{{ new.id }}/"><img src="{{ new.pic }}"></a>
+						<h4><a href="/goods/detail/{{ new.id }}/">{{ new.goods_name }}</a></h4>
 						<div class="prize">￥{{ new.price }}</div>
 					</li>
                     {% endfor %}

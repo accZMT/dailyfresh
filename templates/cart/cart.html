@@ -21,12 +21,13 @@
                 var price = parseFloat($(this).parent().siblings(".col07").text());
                 total_price += price;
                 total_count += count;
-                console.log(total_price);
             });
             $("#total_price").text(total_price.toFixed(2));
             $("#total_count").text(total_count);
             $("#total_count_one").text(total_count);
-
+            if(parseInt($("#total_count").text()) == 0 ){
+                $("#cart").html('<p class="cart_list_td clearfix" style="font-size: 30px;height: 100px; text-align: center; line-height: 100px">你的购物车空空如也。。。。。。</p>')
+            }
         }
         {# 删除购物车中的商品 #}
         function delete_cart(cart_id){
@@ -36,7 +37,6 @@
                 total_all();
             });
         }
-
 
         $(function () {
             total();
@@ -89,13 +89,10 @@
                     total();
                     total_all();
                 });
-                     total();
+                    total();
                     total_all();
             });
-            if(parseInt($("#total_count").text()) == 0 ){
-                $("#to_pay").css({'display':'none'});
-                $("#checkall").prop("checked",false);
-            }
+
         })
     </script>
 {% endblock %}
@@ -111,6 +108,7 @@
 		<li class="col05">小计</li>
 		<li class="col06">操作</li>
 	</ul>
+    <div id="cart">
     {% if carts %}
     <form action="{% url 'order:order' %}" method="get">
 	{% for cart in carts %}
@@ -138,11 +136,12 @@
 	<ul class="settlements">
 		<li class="col01"><input type="checkbox" name="" checked="" id="checkall"></li>
 		<li class="col02">全选</li>
-		<li class="col03">合计(不含运费)：<span>¥</span><em id="total_price">42.60</em><br>共计<b id="total_count">2</b>件商品</li>
+		<li class="col03">合计(不含运费)：<span>¥</span><em id="total_price">0.00</em><br>共计<b id="total_count">0</b>件商品</li>
 		<li class="col04" id="to_pay"><input type="submit" value="去结算" ></li>
 	</ul>
     </form>
     {% else %}
        <p class="cart_list_td clearfix" style="font-size: 30px;height: 100px; text-align: center; line-height: 100px">你的购物车空空如也。。。。。。</p>
     {% endif %}
+    </div>
 {% endblock %}

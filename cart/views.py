@@ -50,7 +50,6 @@ def delete(request, cart_id):
 
 def update(request, cart_id, count):
 
-    print("=================", type(cart_id))
     cart1 = CartModel.objects.get(id=cart_id)
     cart1.count = count
     cart1.save()
